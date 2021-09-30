@@ -15,6 +15,10 @@
           Carregando
 
       </div>
+
+      <div class="mt-5 mx-auto" v-if="error != ''">
+          {{error}}
+      </div>
     
       <table v-show="address.cidade != '' " class="table mt-5">
   <thead>
@@ -43,20 +47,28 @@ export default {
                 cidade: ''
             },
 
-            preloader: false
+            preloader: false,
+            error: ''
         }
     },
 
     methods: {
         onSubmit () {
+            this.reset()
             this.preloader = true
             this.$http.get('https://api.postmon.com.br/v1/cep/'+ this.cep).then(response =>{
                 this.address = response.body
             }, error => {
                 console.log(error)
+                this.error = 'CEP errado'
                 }).finally(() => {
                     this.preloader = false
                 })
+        },
+
+        reset(){
+            this.error = '',
+            this.address.cidade = ''
         }
     }
 }
